@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kuard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kuard
+  template:
+    metadata:
+      labels:
+        app: kuard
+    spec:
+      containers:
+        - name: kuard
+          image: gcr.io/kuar-demo/kuard-amd64:blue
+          resources:
+            limits:
+              cpu: 0.1
+              memory: 20Mi
+          livenessProbe:
+            httpGet:
+              port: 8080
+              path: /healthy
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            failureThreshold: 2
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /ready
+            initialDelaySeconds: 3
+            periodSeconds: 5
+            failureThreshold: 2
